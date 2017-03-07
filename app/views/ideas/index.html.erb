@@ -1,0 +1,27 @@
+<h1>Hi <%= current_user.alias %>!</h1>
+<h4><%= link_to "See Profile", user_url(current_user.id) %></h4>
+<% if flash[:message] %>
+    <p><%= flash[:message] %></p>
+<% end %>
+<form action= '/ideas' method='post'>
+    <input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>'>
+    <%= text_field(:idea, :content) %>
+    <input type='hidden' name='idea[user_id]' value= <%= current_user.id %>>
+    <input type='submit' value='Idea!'>
+</form>
+<% @ideas.sort_by{|idea| idea.likes.count}.reverse!.each do |idea| %>
+        <p><%= link_to idea.user.alias, user_url(idea.user.id) %>  says: <%= idea.content %></p>
+        <form action = '/likes' method= 'post'>
+            <input type ='hidden' name='authenticity_token' value= '<%= form_authenticity_token %>'>
+            <input type= 'hidden' name='idea_id' value = <%= idea.id %>>
+            <input type= 'submit' value= 'Like'>
+        </form>
+        <p><a href=<%= idea_url(idea.id) %> ><%=idea.likes.count %> people</a> like this</p>
+        <% if idea.user_id == current_user.id %>
+            <%= link_to "Delete", idea, method: :delete %>
+        <% end %>
+        <hr>
+<% end %>
+
+
+

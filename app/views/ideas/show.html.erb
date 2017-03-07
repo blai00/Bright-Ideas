@@ -1,0 +1,17 @@
+<p><%= link_to @idea.user.alias, user_url(@idea.user.id) %> says: <%= @idea.content %> </p>
+
+<p>People who liked this post:</p>
+<table>
+    <tr>
+        <th>Alias</th>
+        <th>Name</th>
+        <th>Count</th>
+    </tr>
+    <% @idea.likes.select("distinct user_id").sort_by{|like|like.user.likes.count}.reverse!.each do |like| %>
+    <tr>
+        <td><%= link_to like.user.alias, user_url(like.user.id) %></td>
+        <td><%= like.user.name %></td>
+        <td><%= like.user.likes.count %></td>
+    </tr>
+    <% end %>
+</table>
